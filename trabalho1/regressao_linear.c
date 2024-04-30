@@ -3,47 +3,47 @@
 #include "regressao_linear.h"
 
 void lerDados(const char *nomeArquivo, Ponto **pontos, int *n) {
-    FILE *file = fopen(nomeArquivo, "r");
+    FILE *file = fopen(nomeArquivo, "r");//abrir arquivo, somente leitura
     if (!file) {
         perror("Erro ao abrir arquivo");
         exit(1);
     }
 
-    char buffer[1024];
+    char buffer[1024];//contar linhas do arquivo
     int count = 0;
     while (fgets(buffer, sizeof(buffer), file)) {
         count++;
     }
 
-    *pontos = malloc(count * sizeof(Ponto));
+    *pontos = malloc(count * sizeof(Ponto));//alocar na memoria
     if (!*pontos) {
         perror("Erro na alocação de memória");
         fclose(file);
         exit(2);
     }
 
-    rewind(file);
+    rewind(file);//reler o arquivo
     int i = 0;
     while (fscanf(file, "%d,%f", &(*pontos)[i].x, &(*pontos)[i].y) == 2) {
-        i++;
+        i++;                     //coordenada x,  coordenada y
     }
-    fclose(file);
-    *n = count;
+    fclose(file);//fechar
+    *n = count;//contar quantos pontos de dados
 }
-
-void calcularRegressao(Ponto *pontos, int n, double *beta0, double *beta1) {
-    double sumX = 0, sumY = 0, num = 0, den = 0;
-    for (int i = 0; i < n; i++) {
-        sumX += pontos[i].x;
-        sumY += pontos[i].y;
+//calcular linha reta
+void calcularRegressao(Ponto *pontos, int n, double *interceptacao, double *inclinacao) {
+    double somaX = 0, somaY = 0, num = 0, den = 0;
+    for (int i = 0; i < n; i++) {//somando coordenadas
+        somaX += pontos[i].x;
+        somaY += pontos[i].y;
     }
-    double meanX = sumX / n;
-    double meanY = sumY / n;
+    double mediaX = somaX / n;
+    double mediaY = somaY / n; //calcular médias x,y
 
     for (int i = 0; i < n; i++) {
-        num += (pontos[i].x - meanX) * (pontos[i].y - meanY);
-        den += (pontos[i].x - meanX) * (pontos[i].x - meanX);
+        num += (pontos[i].x - mediaX) * (pontos[i].y - mediaY);
+        den += (pontos[i].x - mediaX) * (pontos[i].x - mediaX);
     }
-    *beta1 = num / den;
-    *beta0 = meanY - *beta1 * meanX;
+    *inclinacao = num / den;
+    *interceptacao = mediaY - *inclinacao * mediaX;
 }

@@ -11,13 +11,13 @@ int main(int argc, char *argv[]) {
 
     Ponto *pontos = NULL;
     int n = 0;
-    double beta0, beta1;
+    double interceptacao, inclinacao;
 
     lerDados(argv[1], &pontos, &n);
-    calcularRegressao(pontos, n, &beta0, &beta1);
+    calcularRegressao(pontos, n, &interceptacao, &inclinacao);
 
-    int beta0_arredondado = (int)round(beta0);
-    printf("y = %.1fx + %d\n", beta1, beta0_arredondado);
+    int interceptacao_arredondada = (int)round(interceptacao);
+    printf("y = %.1fx + %d\n", inclinacao, interceptacao_arredondada);
 
     free(pontos);
     return 0;
